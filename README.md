@@ -1,0 +1,1 @@
+# consonant-vowel-patterns
