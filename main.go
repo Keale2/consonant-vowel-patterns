@@ -42,23 +42,40 @@ type Pair struct {
 	Value int
 }
 
+func (p Pair) String() string {
+	str := fmt.Sprintf("%v %v", p.Key, p.Value)
+	fmt.Println(str)
+	return str
+}
+
 // A slice of Pairs that implements sort.Interface to sort by Value
 type PairList []Pair
 
-func (p PairList) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-func (p PairList) Len() int           { return len(p) }
-func (p PairList) Less(i, j int) bool { return p[i].Value < p[j].Value }
+func (pl PairList) Swap(i, j int)      { pl[i], pl[j] = pl[j], pl[i] }
+func (pl PairList) Len() int           { return len(pl) }
+func (pl PairList) Less(i, j int) bool { return pl[i].Value < pl[j].Value }
+func (pl PairList) String() []string {
+	str := []string{}
+	for _, p := range pl {
+		str = append(str, fmt.Sprintf("%v %v", p.Key, p.Value))
+	}
+
+	return str
+}
 
 // A function to turn a map into a PairList, then sort and return it.
 func sortMapByValue(m map[string]int) PairList {
-	p := make(PairList, len(m))
+	pl := make(PairList, len(m))
 	i := 0
 	for k, v := range m {
-		p[i] = Pair{k, v}
+		pl[i] = Pair{k, v}
 		i++
 	}
-	sort.Sort(sort.Reverse(p))
-	return p
+	sort.Sort(sort.Reverse(pl))
+
+	// Could loop through p and create a string from each key/value pair...
+
+	return pl
 }
 
 func getLetterType(letter rune) rune {
@@ -123,9 +140,10 @@ func main() {
 
 	}
 
-	fmt.Println(sortMapByValue(patternMap))
-
 	// Write all 5-letter words to a new file
 	printLines("./five.txt", fiveLetterWords)
+
+	// Write patterns to file sorted by frequency
+	printLines("./pattern-frequency.txt", sortMapByValue(patternMap).String())
 
 }
